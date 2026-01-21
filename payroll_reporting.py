@@ -6,6 +6,12 @@ logger = logging.getLogger(__name__)
 class PayrollAgent:
     def __init__(self, client):
         self.client = client
+        
+        # These should be configured via environment variables or fetched from Odoo
+        # For now, they are placeholders that need to be configured per installation
+        self.payroll_journal_id = 1  # TODO: Configure via environment variable
+        self.payroll_debit_account_id = 1  # TODO: Configure via environment variable
+        self.payroll_credit_account_id = 2  # TODO: Configure via environment variable
 
     def sync_payroll_entries(self):
         """Sync payroll entries by creating journal entries for processed payslips."""
@@ -24,15 +30,15 @@ class PayrollAgent:
                     # Create account.move for payroll
                     move_data = {
                         'move_type': 'entry',
-                        'journal_id': 1,  # Assume journal ID - should be configured
+                        'journal_id': self.payroll_journal_id,
                         'line_ids': [
                             (0, 0, {
-                                'account_id': 1,  # Should be configured
+                                'account_id': self.payroll_debit_account_id,
                                 'debit': slip.get('net', 0),
                                 'name': f'Payroll for {slip.get("employee_id", ["Unknown"])[1] if slip.get("employee_id") else "Unknown"}'
                             }),
                             (0, 0, {
-                                'account_id': 2,  # Should be configured
+                                'account_id': self.payroll_credit_account_id,
                                 'credit': slip.get('net', 0),
                                 'name': 'Payroll Expense'
                             })
