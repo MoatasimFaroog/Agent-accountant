@@ -77,9 +77,18 @@ class ARAPAgent:
             ], ['id', 'invoice_date_due', 'name', 'amount_total'])
             
             logger.info(f"Found {len(due_soon)} invoices due within 7 days")
-            # Schedule payments (simplified: mark for payment)
-            for inv in due_soon:
-                logger.info(f"Schedule payment for invoice {inv.get('name', inv.get('id', 'Unknown'))} due {inv.get('invoice_date_due', 'Unknown')} - Amount: ${inv.get('amount_total', 0):.2f}")
+            
+            # Calculate total amount
+            total_amount = sum(inv.get('amount_total', 0) for inv in due_soon)
+            
+            # Log summary instead of individual invoices
+            if due_soon:
+                logger.info(f"AP Payments Summary: {len(due_soon)} invoices totaling ${total_amount:,.2f} scheduled for payment")
+                # Log first 3 as examples
+                for i, inv in enumerate(due_soon[:3]):
+                    logger.debug(f"  Example {i+1}: {inv.get('name', 'N/A')} - ${inv.get('amount_total', 0):.2f} due {inv.get('invoice_date_due', 'N/A')}")
+                if len(due_soon) > 3:
+                    logger.debug(f"  ... and {len(due_soon) - 3} more invoices")
         except Exception as e:
             logger.error(f"Error scheduling AP payments: {e}")
 
