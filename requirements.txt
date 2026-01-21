@@ -5,5 +5,9 @@ openai>=1.0.0,<2.0.0
 python-dotenv
 Pillow
 
+# API Server
+Flask>=2.3.0,<3.0.0
+Werkzeug>=2.3.0,<3.0.0
+
 # Optional dependencies
 requests

@@ -6,16 +6,18 @@ This project implements an AI-powered agent to automate bookkeeping tasks in Odo
 
 1. **Data Ingestion & OCR**: Extracts data from invoice attachments using OCR and auto-fills Vendor Bills in Odoo.
 
-2. **Automated Reconciliation**: Fetches bank statements and matches them with journal entries, populating the reconciliation widget and flagging discrepancies.
+2. **Flask API Server**: REST API endpoints for uploading invoice images and processing them with OCR (NEW!)
 
-3. **AR/AP Automation**: 
+3. **Automated Reconciliation**: Fetches bank statements and matches them with journal entries, populating the reconciliation widget and flagging discrepancies.
+
+4. **AR/AP Automation**: 
    - Monitors invoice statuses
    - Sends follow-up emails for overdue AR (with validation for partner emails)
    - Schedules AP payments for upcoming due dates
 
-4. **Payroll & Reporting**: Syncs with payroll for journal entries and generates real-time P&L and Balance Sheet reports.
+5. **Payroll & Reporting**: Syncs with payroll for journal entries and generates real-time P&L and Balance Sheet reports.
 
-5. **System Guardrails**: 
+6. **System Guardrails**: 
    - Implements confidence scoring using AI
    - If AI confidence < 90%, sets records to Draft for human review
    - Prevents automated edits to posted entries without audit logs
@@ -26,7 +28,8 @@ This project implements an AI-powered agent to automate bookkeeping tasks in Odo
 - **Odoo API**: XML-RPC for remote procedure calls
 - **OCR**: EasyOCR for text extraction from invoices
 - **AI**: OpenAI GPT-3.5/4 for transaction categorization
-- **Libraries**: xmlrpc.client, easyocr, pandas, Pillow, python-dotenv
+- **API**: Flask for REST API endpoints
+- **Libraries**: xmlrpc.client, easyocr, pandas, Pillow, python-dotenv, Flask
 
 ## Prerequisites
 
@@ -84,9 +87,38 @@ Ensure your Odoo instance has:
 
 ## Usage
 
-### Run Locally
+### Option 1: API Server (NEW - Recommended for Invoice Upload)
 
-Execute the main script:
+Start the Flask API server for uploading invoice images:
+
+```bash
+python api_server.py
+```
+
+Then open your browser and navigate to:
+```
+http://localhost:5000/static/upload.html
+```
+
+Or use the API directly:
+```bash
+curl -X POST http://localhost:5000/upload_invoice \
+  -F "file=@invoice.jpg" \
+  -F "auto_create=true"
+```
+
+**API Features:**
+- Upload invoice images via web interface or API
+- Automatic OCR text extraction
+- Auto-create invoices in Odoo
+- Partner/vendor selection
+- Real-time processing feedback
+
+See [API_USAGE.md](API_USAGE.md) for complete API documentation.
+
+### Option 2: Run Scheduled Tasks
+
+Execute the main script for scheduled automation tasks:
 
 ```bash
 python main.py
