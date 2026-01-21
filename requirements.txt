@@ -1,0 +1,9 @@
+# Core dependencies
+easyocr
+pandas
+openai>=1.0.0
+python-dotenv
+Pillow
+
+# Optional dependencies
+requests
